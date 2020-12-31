@@ -7,8 +7,10 @@ Robert Szafarczyk, 201307211
 
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
 
-class SimpleConvolutionalNetwork(nn.Module):
+
+class ConvolutionalNetwork(nn.Module):
     def __init__(self):
         super(SimpleConvolutionalNetwork, self).__init__()
 
@@ -56,7 +58,16 @@ class SimpleConvolutionalNetwork(nn.Module):
         # 57600 -> 5
         x = self.fc(x)
 
-        # Softmax function to transform the output from the fully connected layer into probabilities.
-        probabilities = nn.Softmax(x)
+        # Return raw, unnormalised scores for each class. nn.CrossEntropyLoss() will apply the
+        # softmax function to normalise the scores in the range [0,1].
+        return x
 
-        return probabilities
+
+def createLossAndOptimizer(net, learning_rate=0.001):
+    # it combines softmax with negative log likelihood loss
+    criterion = nn.CrossEntropyLoss()
+
+    #optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9)
+    optimizer = optim.Adam(net.parameters(), lr=learning_rate)
+
+    return criterion, optimizer
