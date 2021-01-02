@@ -12,18 +12,18 @@ import torch.optim as optim
 
 class ConvolutionalNetwork(nn.Module):
     def __init__(self):
-        super(SimpleConvolutionalNetwork, self).__init__()
+        super(ConvolutionalNetwork, self).__init__()
 
         # First hidden layer: a convolution layer with a filter size 7x7, stride 2, padding 3,
         # the number of channels 64, followed by Batch Normalization and ReLu.
-        self.hidden1 = F.relu(nn.BatchNorm2d(nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3)))
+        self.hidden1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3)
 
         # Second hidden layer: max pooling with a filter size 3x3, stride 2, padding 0;
         self.hidden2 = nn.MaxPool2d(kernel_size=3, stride=2, padding=0)
 
         # Third hidden layer: a convolution layer with a filter size 3x3, stride 1, padding 1,
         # the number of channels 64, followed by Batch Normalization and ReLu.
-        self.hidden3 = F.relu(nn.BatchNorm2d(nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1)))
+        self.hidden3 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1)
 
         # Fourth hidden layer: max pooling with a filter size 3x3, stride 2, padding 0;
         self.hidden4 = nn.MaxPool2d(kernel_size=3, stride=2, padding=0)
@@ -41,13 +41,13 @@ class ConvolutionalNetwork(nn.Module):
         # When applying a kernel, the shape changes: (N - F + 2P)/S + 1
 
         # shape : 3x250x250 -> 64x128x128 = (250 - 7 + 2*6)/2 + 1 = 128
-        x = self.hidden1(x)
+        x = F.relu(nn.BatchNorm2d(self.hidden1(x)))
 
         # 64x128x128 -> 64x62x62
         x = self.hidden2(x)
 
         # 64x62x62 -> 64x62x62
-        x = self.hidden3(x)
+        x = F.relu(nn.BatchNorm2d(self.hidden3(x)))
 
         # 64x62x62 -> 64x30x30
         x = self.hidden4(x)
