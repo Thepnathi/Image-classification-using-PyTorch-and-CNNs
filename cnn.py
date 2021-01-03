@@ -14,22 +14,16 @@ class ConvolutionalNetwork(nn.Module):
     def __init__(self):
         super(ConvolutionalNetwork, self).__init__()
 
-        # First hidden layer: a convolution layer with a filter size 7x7, stride 2, padding 3,
-        # the number of channels 64, followed by Batch Normalization and ReLu.
-        self.hidden1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3)
+        self.conv2 = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1)
+        self.pooling_layer = nn.MaxPool2d(kernel_size=3, stride=2, padding=0)
 
-        # Second hidden layer: max pooling with a filter size 3x3, stride 2, padding 0;
-        self.hidden2 = nn.MaxPool2d(kernel_size=3, stride=2, padding=0)
+        batch_layer = nn.BatchNorm2d(64)
+        self.batch_norm_and_relu = lambda x : F.relu(batch_layer(x))
 
-        # Third hidden layer: a convolution layer with a filter size 3x3, stride 1, padding 1,
-        # the number of channels 64, followed by Batch Normalization and ReLu.
-        self.hidden3 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1)
-
-        # Fourth hidden layer: max pooling with a filter size 3x3, stride 2, padding 0;
-        self.hidden4 = nn.MaxPool2d(kernel_size=3, stride=2, padding=0)
-
-        # Fully connected layer, with the output channel 5 (i.e., the number of classes);
         self.fc = nn.Linear(57600, 5)
+
+        self.softmax = nn.Softmax(5)
 
 
     def forward(self, x):
@@ -40,20 +34,28 @@ class ConvolutionalNetwork(nn.Module):
         """
         # When applying a kernel, the shape changes: (N - F + 2P)/S + 1
 
-        # shape : 3x250x250 -> 64x128x128 = (250 - 7 + 2*6)/2 + 1 = 128
-        x = F.relu(nn.BatchNorm2d(self.hidden1(x)))
+        # First hidden layer: a convolution layer with a filter size 7x7, stride 2, padding 3,
+        # the number of channels 64, followed by Batch Normalization and ReLu.
+        # shape : 3x250x250 -> 64x125x125 = (250 - 7 + 2*6)/2 + 1 = 128
+        x = self.conv1(x)
+        x = self.batch_norm_and_relu(x)
 
-        # 64x128x128 -> 64x62x62
-        x = self.hidden2(x)
+        # Second hidden layer: max pooling with a filter size 3x3, stride 2, padding 0;
+        # 64x125x125 -> 64x62x62
+        x = self.pooling_layer(x)
 
+        # Third hidden layer: a convolution layer with a filter size 3x3, stride 1, padding 1,
+        # the number of channels 64, followed by Batch Normalization and ReLu.
         # 64x62x62 -> 64x62x62
-        x = F.relu(nn.BatchNorm2d(self.hidden3(x)))
+        x = self.conv2(x)
+        x = self.batch_norm_and_relu(x)
 
+        # Fourth hidden layer: max pooling with a filter size 3x3, stride 2, padding 0;
         # 64x62x62 -> 64x30x30
-        x = self.hidden4(x)
+        x = self.pooling_layer(x)
 
-        # Reshape data for the fully connected layer.
-        # 64x30x30 -> 57600
+        # Fully connected layer, with the output channel 5 (i.e., the number of classes);
+        # 64x30x30 -> 57600 (Reshape data for the fully connected layer).
         x = x.view(-1, 64 * 30 * 30)
         # 57600 -> 5
         x = self.fc(x)
