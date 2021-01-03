@@ -31,16 +31,26 @@ TRAIN_HOSTORY_FNAME = 'train_history_dict.npy'
 
 
 def plot_training_history(train_history):
-    plt.figure(figsize=(8, 6))
+    # plt.figure(figsize=(8, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 8))
+    ax1.set_title('Evoloution of the training loss.')
+    ax2.set_title('Evoloution of the training accuracy.')
 
     for rate, (loss_hist, accuracy_hist) in train_history.items():
+        label = "{:.0e}".format(rate) + " learning rate"
         x = np.arange(1, len(loss_hist) + 1)
-        plt.plot(x, loss_hist, label="Training loss for " + "{:.0e}".format(rate) + " learning rate")
+        ax1.plot(x, loss_hist, label=label)
+        ax2.plot(x, accuracy_hist, label=label)
 
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.legend(loc='upper right')
-    plt.title("Evolution of the training loss")
+    ax1.xaxis.set_ticks(np.arange(min(x), max(x)+1, 1.0))
+    ax2.xaxis.set_ticks(np.arange(min(x), max(x)+1, 1.0))
+
+    # Single legend for both plots.
+    handles, labels = ax2.get_legend_handles_labels()
+    fig.legend(handles, labels, loc='upper center')
+
+    plt.setp(ax1, xlabel='Epoch', ylabel='Loss')
+    plt.setp(ax2, xlabel='Epoch', ylabel='Accuracy')
     plt.show()
 
 def gen_model_fname(learning_rate):
