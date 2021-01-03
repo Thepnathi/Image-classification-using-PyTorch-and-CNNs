@@ -68,7 +68,7 @@ class imageDataset(Dataset):
 
 class DefaultTrainSet(imageDataset):
     def __init__(self, **kwargs):
-        script_folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        script_folder = os.path.dirname(os.path.abspath(__file__))
          #  img_list_train.npy that contains the path of the training images is provided
         default_path = os.path.join(script_folder, 'img_list_train.npy')
         root_dir = os.path.join(script_folder, 'data')
@@ -78,7 +78,7 @@ class DefaultTrainSet(imageDataset):
 class DefaultTestSet(imageDataset):
 
     def __init__(self, **kwargs):
-        script_folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        script_folder = os.path.dirname(os.path.abspath(__file__))
         #  img_list_test.npy that contains the path of the testing images is provided
         default_path = os.path.join(script_folder, 'img_list_test.npy')
         root_dir = os.path.join(script_folder, 'data')
