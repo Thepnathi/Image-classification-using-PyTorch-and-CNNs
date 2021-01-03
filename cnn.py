@@ -23,8 +23,6 @@ class ConvolutionalNetwork(nn.Module):
 
         self.fc = nn.Linear(57600, 5)
 
-        self.softmax = nn.Softmax(5)
-
 
     def forward(self, x):
         """
