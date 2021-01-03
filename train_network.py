@@ -1,5 +1,5 @@
 """
-Assignment 2, COMP338 - Step 1. Define a Convolutional Neural Network
+Assignment 2, COMP338 - Step 3. Train the Convolutional Neural Network
 
 Thepnathi Chindalaksanaloet, 201123978
 Robert Szafarczyk, 201307211
@@ -23,22 +23,10 @@ train_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_training_s
 test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
 
 CLASSES = ["airplanes", "cars", "dog", "faces", "keyboard"]
+learning_rates = [1e-02, 1e-03, 1e-04, 1e-05]
 
-
-def convert_net_output_to_labels(output):
-    """
-    Convert a batch of network outputs from probabilities to class predictions.
-    Set the value with highest probability to 1, the rest to 0.
-    """
-    new_output = output.detach().clone()
-    for i, probabilities in enumerate(output):
-        max_prob = max(probabilities)
-        for j, prob in enumerate(probabilities):
-            probabilities[j] = 1 if prob == max else 0
-
-        new_output[i] = probabilities
-
-    return new_output
+def gen_model_fname(learning_rate):
+    return "model_learning_rate_" + "{:.0e}".format(learning_rate) + ".pth"
 
 
 def train(net, batch_size, n_epochs, learning_rate):
@@ -65,7 +53,7 @@ def train(net, batch_size, n_epochs, learning_rate):
     train_history = []
 
     training_start_time = time.time()
-    model_path = "model_learning_rate_" + "{:.0e}".format(learn) + ".pth"
+    model_fname = gen_model_fname(learning_rate)
 
     n_minibatches = len(train_dataset) // batch_size
     for epoch in range(n_epochs):  # loop over the dataset multiple times
@@ -94,7 +82,7 @@ def train(net, batch_size, n_epochs, learning_rate):
             total_train_loss += loss.item()
 
         train_history.append(total_train_loss / len(train_dataset))
-        th.save(net.state_dict(), model_path)
+        th.save(net.state_dict(), model_fname)
 
         print(f'Epoch: {epoch + 1}\trunning_loss: {running_loss}\ttook: {time.time() - start_time}s')
         running_loss = 0.0
@@ -103,11 +91,11 @@ def train(net, batch_size, n_epochs, learning_rate):
     print("Training Finished, took {:.2f}s".format(time.time() - training_start_time))
 
     # Load the trained model into network
-    net.load_state_dict(th.load(model_path))
+    net.load_state_dict(th.load(model_fname))
 
     return train_history
 
 
 if  __name__ == "__main__":
-    for rate in [1e-02, 1e-03, 1e-04, 1e-05]:
+    for rate in learning_rates:
         train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=rate)
