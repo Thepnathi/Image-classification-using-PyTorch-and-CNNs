@@ -22,10 +22,31 @@ n_test_samples = len(test_dataset)
 train_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_training_samples, dtype=np.int64))
 test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
 
+CLASSES = ["airplanes", "cars", "dog", "faces", "keyboard"]
+
+
+def convert_net_output_to_labels(output):
+    """
+    Convert a batch of network outputs from probabilities to class predictions.
+    Set the value with highest probability to 1, the rest to 0.
+    """
+    new_output = output.detach().clone()
+    for i, probabilities in enumerate(output):
+        max_prob = max(probabilities)
+        for j, prob in enumerate(probabilities):
+            probabilities[j] = 1 if prob == max else 0
+
+        new_output[i] = probabilities
+
+    return new_output
+
 
 def train(net, batch_size, n_epochs, learning_rate):
     """
-    Train a neural network and print statistics of the training
+    Train a neural network, print statistics of the training and save the trained model to
+    the file 'model_learning_rate_{learning_rate}.pth'
+
+    Return the training history.
 
     :param net: (PyTorch Neural Network)
     :param batch_size: (int)
@@ -44,7 +65,7 @@ def train(net, batch_size, n_epochs, learning_rate):
     train_history = []
 
     training_start_time = time.time()
-    model_path = "trainded_model.pth"
+    model_path = f"model_learning_rate_{learning_rate}.pth"
 
     n_minibatches = len(train_dataset) // batch_size
     for epoch in range(n_epochs):  # loop over the dataset multiple times
@@ -57,7 +78,7 @@ def train(net, batch_size, n_epochs, learning_rate):
 
             # Gather data for this mini batch
             inputs = th.tensor([train_dataset[j]['imNorm'] for j in range(i, i+batch_size)], dtype=th.float32)
-            labels = th.tensor([train_dataset[j]['label'] for j in range(i, i+batch_size)], dtype=th.float32)
+            labels = th.tensor([train_dataset[j]['label'] for j in range(i, i+batch_size)], dtype=th.int64)
 
             # zero the parameter gradients
             optimizer.zero_grad()
@@ -72,18 +93,12 @@ def train(net, batch_size, n_epochs, learning_rate):
             running_loss += loss.item()
             total_train_loss += loss.item()
 
-            # print every 10th minibatch
-            print_every = 10
-            if (i + 1) % (print_every + 1) == 0:
-                print("Epoch {}, {:d}% \t train_loss: {:.2f} took: {:.2f}s".format(
-                      epoch + 1, int(100 * (i + 1) / n_minibatches), running_loss / print_every,
-                      time.time() - start_time))
-                running_loss = 0.0
-                start_time = time.time()
-
         train_history.append(total_train_loss / len(train_dataset))
-
         th.save(net.state_dict(), model_path)
+
+        print(f'Epoch: {epoch + 1}\trunning_loss: {running_loss}\ttook: {time.time() - start_time}s')
+        running_loss = 0.0
+
 
     print("Training Finished, took {:.2f}s".format(time.time() - training_start_time))
 
@@ -94,4 +109,5 @@ def train(net, batch_size, n_epochs, learning_rate):
 
 
 if  __name__ == "__main__":
-    train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=0.01)
+    for learn in [0.01, 0.001, 0.0001, 0.00001]:
+        train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=learn)
