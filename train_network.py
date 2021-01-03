@@ -6,6 +6,7 @@ Robert Szafarczyk, 201307211
 """
 
 import time
+import os
 import torch as th
 import numpy as np
 import matplotlib.pyplot as plt
@@ -26,12 +27,16 @@ test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_sample
 CLASSES = ["airplanes", "cars", "dog", "faces", "keyboard"]
 learning_rates = [1e-02, 1e-03, 1e-04, 1e-05]
 
+TRAIN_HOSTORY_FNAME = 'train_history_dict.npy'
 
-def plot_losses(train_history):
-    x = np.arange(1, len(train_history) + 1)
 
+def plot_training_history(train_history):
     plt.figure(figsize=(8, 6))
-    plt.plot(x, train_history, label="Training loss")
+
+    for rate, (loss_hist, accuracy_hist) in train_history.items():
+        x = np.arange(1, len(loss_hist) + 1)
+        plt.plot(x, loss_hist, label="Training loss for " + "{:.0e}".format(rate) + " learning rate")
+
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend(loc='upper right')
@@ -118,10 +123,16 @@ def train(net, batch_size, n_epochs, learning_rate):
 
 
 if  __name__ == "__main__":
-    # Each learning rate gets its own training history.
-    # The training history consists of the loss and accuracy values for each epoch of training.
-    train_history = {}
-    for rate in learning_rates:
-        train_history[rate] = train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=rate)
+    # Don' train if we have an existing model.
+    if not os.path.isfile(TRAIN_HOSTORY_FNAME):
+        # Each learning rate gets its own training history.
+        # The training history consists of the loss and accuracy values for each epoch of training.
+        train_history = {}
+        for rate in learning_rates:
+            train_history[rate] = train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=rate)
 
-    np.save('train_history_dict.npy', train_history)
+        np.save(TRAIN_HOSTORY_FNAME, train_history)
+
+    # Plot the loss and accuracy for different learning rates accross epochs.
+    train_history = np.load(TRAIN_HOSTORY_FNAME, allow_pickle=True)[()]
+    plot_training_history(train_history)
