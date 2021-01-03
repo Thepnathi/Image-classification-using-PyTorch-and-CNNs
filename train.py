@@ -65,7 +65,7 @@ def train(net, batch_size, n_epochs, learning_rate):
     train_history = []
 
     training_start_time = time.time()
-    model_path = f"model_learning_rate_{learning_rate}.pth"
+    model_path = "model_learning_rate_" + "{:.0e}".format(learn) + ".pth"
 
     n_minibatches = len(train_dataset) // batch_size
     for epoch in range(n_epochs):  # loop over the dataset multiple times
@@ -109,5 +109,5 @@ def train(net, batch_size, n_epochs, learning_rate):
 
 
 if  __name__ == "__main__":
-    for learn in [0.01, 0.001, 0.0001, 0.00001]:
-        train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=learn)
+    for rate in [1e-02, 1e-03, 1e-04, 1e-05]:
+        train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=rate)
