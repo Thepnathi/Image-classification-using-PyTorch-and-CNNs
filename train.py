@@ -18,6 +18,9 @@ test_dataset = imageDataset('data', 'img_list_test.npy')
 
 n_training_samples = len(train_dataset)
 n_test_samples = len(test_dataset)
+# Random indices
+train_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_training_samples, dtype=np.int64))
+test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
 
 
 def train(net, batch_size, n_epochs, learning_rate):
@@ -35,38 +38,26 @@ def train(net, batch_size, n_epochs, learning_rate):
     print("learning_rate=", learning_rate)
     print("=" * 30)
 
-    # Random indices
-    train_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_training_samples, dtype=np.int64))
-    test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
-
-    test_loader = th.utils.data.DataLoader(test_dataset, batch_size=batch_size,
-                                           sampler=test_sampler, num_workers=1)
-    train_loader = th.utils.data.DataLoader(train_dataset, batch_size=batch_size,
-                                            sampler=train_sampler, num_workers=1)
-
-
     criterion, optimizer = createLossAndOptimizer(net, learning_rate)
 
     # Init variables used for plotting the loss
     train_history = []
-    val_history = []
 
     training_start_time = time.time()
-    model_fname = "cnn_model.pth"
+    model_path = "trainded_model.pth"
 
-    # # Move model to gpu if possible
-    # net = net.to(device)
-
+    n_minibatches = len(train_dataset) // batch_size
     for epoch in range(n_epochs):  # loop over the dataset multiple times
+        start_time = time.time()
 
         running_loss = 0.0
-        start_time = time.time()
         total_train_loss = 0
 
-        for i, (inputs, labels) in enumerate(train_loader):
+        for i in range(n_minibatches):
 
-            # Move tensors to correct device
-            # inputs, labels = inputs.to(device), labels.to(device)
+            # Gather data for this mini batch
+            inputs = th.tensor([train_dataset[j]['imNorm'] for j in range(i, i+batch_size)], dtype=th.float32)
+            labels = th.tensor([train_dataset[j]['label'] for j in range(i, i+batch_size)], dtype=th.float32)
 
             # zero the parameter gradients
             optimizer.zero_grad()
@@ -81,20 +72,26 @@ def train(net, batch_size, n_epochs, learning_rate):
             running_loss += loss.item()
             total_train_loss += loss.item()
 
-        print("Epoch {},\t train_loss: {:.2f} took: {:.2f}s".format(
-                epoch + 1, running_loss, time.time() - start_time))
-        running_loss = 0.0
-        start_time = time.time()
+            # print every 10th minibatch
+            print_every = 10
+            if (i + 1) % (print_every + 1) == 0:
+                print("Epoch {}, {:d}% \t train_loss: {:.2f} took: {:.2f}s".format(
+                      epoch + 1, int(100 * (i + 1) / n_minibatches), running_loss / print_every,
+                      time.time() - start_time))
+                running_loss = 0.0
+                start_time = time.time()
 
-        train_history.append(total_train_loss / len(train_loader))
+        train_history.append(total_train_loss / len(train_dataset))
 
-        th.save(net.state_dict(), model_fname)
+        th.save(net.state_dict(), model_path)
 
     print("Training Finished, took {:.2f}s".format(time.time() - training_start_time))
 
-    # Load best model
-    net.load_state_dict(th.load(model_fname))
+    # Load the trained model into network
+    net.load_state_dict(th.load(model_path))
 
-    return train_history, val_history
+    return train_history
 
-train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=0.01)
+
+if  __name__ == "__main__":
+    train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=0.01)
