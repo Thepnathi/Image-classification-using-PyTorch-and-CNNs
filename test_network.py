@@ -9,7 +9,7 @@ import numpy as np
 import torch as th
 
 from cnn import ConvolutionalNetwork
-from train import learning_rates, CLASSES, gen_model_fname
+from train_network import learning_rates, CLASSES, gen_model_fname
 
 
 
