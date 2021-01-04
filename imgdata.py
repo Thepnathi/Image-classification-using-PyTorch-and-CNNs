@@ -5,9 +5,12 @@ author  : Shan Luo
 created : 20/11/20 5:30 PM
 
 
-Edited (changed scimage to opencv) 01/01/2021 by
+Edited 01/01/2021 by
     Thepnathi Chindalaksanaloet, 201123978
     Robert Szafarczyk, 201307211
+Changes:
+    - use opencv instead of scimage to load images,
+    - change image labels from 1D numpy arrays to scalar integers.
 '''
 
 import os
@@ -30,8 +33,6 @@ class imageDataset(Dataset):
         return len(self.imPath)
 
     def __getitem__(self, idx):
-    	# print(self.root_dir)
-    	# print(self.imPath[idx])
         im = cv2.imread(os.path.join(self.root_dir, self.imPath[idx]))  # read the image
 
         if len(im.shape) < 3: # if there is grey scale image, expand to r,g,b 3 channels
