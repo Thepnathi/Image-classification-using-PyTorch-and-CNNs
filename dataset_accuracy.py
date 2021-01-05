@@ -37,13 +37,16 @@ class Dataset_Accuracy(object):
 
 
 if __name__ == "__main__":
+    # Stores all the trained cnn models 
     trained_models_by_learning_rates = {}
 
+    # Iterate through learning rates and stores the trained model by learning rate
     for rate in learning_rates:
         model = ConvolutionalNetwork()
         load_trained_network(model, rate)
         trained_models_by_learning_rates[rate] = model
 
+    # Calculates the prediction accuracy of the train and test dataset on each of the trained cnn models by learning rate
     for rate in learning_rates:
         print(f'Learning rate: {rate}')
         loaded_trained_model = trained_models_by_learning_rates[rate]
