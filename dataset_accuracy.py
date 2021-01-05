@@ -1,3 +1,10 @@
+"""
+Assignment 2, COMP338 - Step 4.1 Test datasets against the ground-truth. Uses all the trained models
+
+Thepnathi Chindalaksanaloet, 201123978
+Robert Szafarczyk, 201307211
+"""
+
 from train_network import learning_rates, train_dataset, test_dataset
 from test_network import load_trained_network
 from cnn import ConvolutionalNetwork
@@ -12,12 +19,13 @@ class Dataset_Accuracy(object):
         total = 0
 
         for i in range(len(dataset)):
-          input = th.tensor([dataset[i]['imNorm']])
+          image = th.tensor([dataset[i]['imNorm']])
           label = th.tensor([dataset[i]['label']])
-          outputs = self.net(input)
+          outputs = self.net(image)
           _, predicted = th.max(outputs, 1)
           total += label.size(0)
           correct_prediction += (predicted == label).sum()
+
         accuracy = 100 * float(correct_prediction) / total
         print('Accuracy of the network on the {} {} images: {:2f} %'.format(total, name, accuracy))
 
