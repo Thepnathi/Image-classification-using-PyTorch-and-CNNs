@@ -7,8 +7,6 @@ Robert Szafarczyk, 201307211
 
 import numpy as np
 import torch as th
-import torchvision as tv
-from matplotlib import pyplot as plt
 from constants import Constants, Plot_Tools
 from test_network import load_trained_network, load_trained_models_by_learning_rates
 
