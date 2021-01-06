@@ -21,6 +21,7 @@ class Dataset_Accuracy(object):
         for i in range(len(dataset)):
           image = th.tensor([dataset[i]['imNorm']])
           label = th.tensor([dataset[i]['label']])
+          image, label = image.to(Constants.device), label.to(Constants.device)
           outputs = self.net(image)
           _, predicted = th.max(outputs, 1)
           total += label.size(0)

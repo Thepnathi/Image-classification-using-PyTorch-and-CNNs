@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from imgdata import imageDataset, DefaultTrainSet, DefaultTestSet
 
 class Constants(object):
+    device = th.device("cuda" if th.cuda.is_available() else "cpu")
+
     default_batch_size = 16
     default_num_epochs = 20
 
@@ -21,6 +23,8 @@ class Constants(object):
     learning_rates = [1e-02, 1e-03, 1e-04, 1e-05]
 
     TRAIN_HISTORY_FNAME = 'train_history_dict.npy'
+
+    line = "=================="
 
 
 class Plot_Tools(object):
