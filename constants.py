@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 from imgdata import imageDataset, DefaultTrainSet, DefaultTestSet
 
 class Constants(object):
+    default_batch_size = 16
+    default_num_epochs = 20
+
     train_dataset = imageDataset('data', 'img_list_train.npy')
     test_dataset = imageDataset('data', 'img_list_test.npy')
 
