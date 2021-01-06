@@ -1,3 +1,11 @@
+"""
+Assignment 2, COMP338 - Step 0 - This file contains the constants and general helper functions
+
+Thepnathi Chindalaksanaloet, 201123978
+Robert Szafarczyk, 201307211
+"""
+
+import itertools
 import numpy as np
 import torch as th
 import matplotlib.pyplot as plt
@@ -26,7 +34,7 @@ class Constants(object):
 
     line = "=================="
 
-
+# The following function plot_confusion_matrix is taken from Tutorial/Labs 7 & 8 by Prof. Shan Luo
 class Plot_Tools(object):
     def plot_confusion_matrix(cm, classes,
                             normalize=False,
@@ -63,3 +71,4 @@ class Plot_Tools(object):
         plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
+        plt.show()

@@ -1,5 +1,6 @@
 """
 Assignment 2, COMP338 - Step 4.2 Compute and report the overall and classification errors per class
+Assignment 2, COMP338 - Step 4.3 Compute and show the confusion matrix and analyze the results
 
 Thepnathi Chindalaksanaloet, 201123978
 Robert Szafarczyk, 201307211
@@ -20,7 +21,6 @@ class Class_Accuracy(object):
     def compute_confusion_matrix_for_class_accuracy(self, dataset, batch_size=Constants.default_batch_size):
         # confusion matrix (real label, predicted label)
         confusion_matrix = np.zeros((self.num_class, self.num_class), dtype=np.int64)
-
 
         for i in range(len(dataset)):
             image, label = th.tensor([dataset[i]['imNorm']]), th.tensor([dataset[i]['label']])
@@ -46,18 +46,30 @@ class Class_Accuracy(object):
 
 
 if __name__ == "__main__":
+    # dictionary that contains the trained cnn model, where key is the model's learning rate
     trained_models_by_learning_rates = load_trained_models_by_learning_rates()
 
+    # dictionary to stores the confusion matrix of each model, where key is the learning rates 
     confusion_matrix_by_learning_rates = {}
 
+    # Iterate through each value of learning rate and pulls the corresponding model from the dictionary
+    # Compute and stores the confusion matrix given the cnn model and the test data
     for rate in Constants.learning_rates:
+        print(f'Model with learning rate of {rate}:')
         class_acc = Class_Accuracy(trained_models_by_learning_rates[rate], Constants.CLASSES)
-        confusion_matrix_by_learning_rates[rate] = class_acc.compute_confusion_matrix_for_class_accuracy(Constants.train_dataset)
+        confusion_matrix_by_learning_rates[rate] = class_acc.compute_confusion_matrix_for_class_accuracy(Constants.test_dataset)
         print(Constants.line)
+        break # Remove break to check all the models
 
+    
+    # For each learning rate, use matplotlib to display the confusion matrix
     for rate in Constants.learning_rates:
         print(confusion_matrix_by_learning_rates[rate])
         print(Constants.line)
-    
+        Plot_Tools.plot_confusion_matrix(cm=confusion_matrix_by_learning_rates[rate], 
+                                         classes=Constants.CLASSES, 
+                                         normalize=False, 
+                                         title=f'Confusion matrix of CCN model with learning rate of {rate}')
+        break # Remove break to check all the models
 
 
