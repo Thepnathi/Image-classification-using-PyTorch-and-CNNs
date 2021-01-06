@@ -7,6 +7,8 @@ Robert Szafarczyk, 201307211
 
 import numpy as np
 import torch as th
+from constants import Constants
+from test_network import load_trained_network
 
 class Class_Accuracy(object):
     def __init__(self, net, classes):
@@ -39,6 +41,10 @@ class Class_Accuracy(object):
 
 
 if __name__ == "__main__":
+    trained_models_by_learning_rates = load_trained_models_by_learning_rates()
+    
+    example_model = 1
+
     class_acc = Class_Accuracy()
 
 
