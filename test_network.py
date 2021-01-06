@@ -16,9 +16,10 @@ def load_trained_network(net, learning_rate):
     return net.load_state_dict(th.load(gen_model_fname(learning_rate)))
 
 if __name__ == "__main__":
-    net = ConvolutionalNetwork()
 
     for rate in Constants.learning_rates:
-        net = load_trained_network(net, rate)
+        net = ConvolutionalNetwork()
+        load_trained_network(net, rate)
+        print(net)
 
         # Do test step 3.3 and 4.

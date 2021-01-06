@@ -5,9 +5,9 @@ Thepnathi Chindalaksanaloet, 201123978
 Robert Szafarczyk, 201307211
 """
 
-from train_network import learning_rates, train_dataset, test_dataset
 from test_network import load_trained_network
 from cnn import ConvolutionalNetwork
+from constants import Constants
 import torch as th
 
 class Dataset_Accuracy(object):
@@ -49,14 +49,14 @@ if __name__ == "__main__":
     trained_models_by_learning_rates = {}
 
     # Iterate through learning rates and stores the trained model by learning rate
-    for rate in learning_rates:
+    for rate in Constants.learning_rates:
         model = ConvolutionalNetwork()
         load_trained_network(model, rate)
         trained_models_by_learning_rates[rate] = model
 
     # Calculates the prediction accuracy of the train and test dataset on each of the trained cnn models by learning rate
-    for rate in learning_rates:
+    for rate in Constants.learning_rates:
         print(f'Learning rate: {rate}')
         loaded_trained_model = trained_models_by_learning_rates[rate]
         dataset_accuracy = Dataset_Accuracy(loaded_trained_model)
-        dataset_accuracy .compute_dataset_accuracy(train_dataset, test_dataset)
+        dataset_accuracy .compute_dataset_accuracy(Constants.train_dataset, Constants.test_dataset)
