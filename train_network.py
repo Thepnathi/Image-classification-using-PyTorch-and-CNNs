@@ -11,24 +11,8 @@ import torch as th
 import numpy as np
 import matplotlib.pyplot as plt
 
-from imgdata import imageDataset, DefaultTrainSet, DefaultTestSet
+from constants import Constants
 from cnn import ConvolutionalNetwork, createLossAndOptimizer
-
-
-train_dataset = imageDataset('data', 'img_list_train.npy')
-test_dataset = imageDataset('data', 'img_list_test.npy')
-
-n_training_samples = len(train_dataset)
-n_test_samples = len(test_dataset)
-# Random indices
-train_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_training_samples, dtype=np.int64))
-test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
-
-CLASSES = ["airplanes", "cars", "dog", "faces", "keyboard"]
-learning_rates = [1e-02, 1e-03, 1e-04, 1e-05]
-
-TRAIN_HOSTORY_FNAME = 'train_history_dict.npy'
-
 
 def plot_training_history(train_history):
     # plt.figure(figsize=(8, 6))
@@ -83,7 +67,7 @@ def train(net, batch_size, n_epochs, learning_rate):
     training_start_time = time.time()
     model_fname = gen_model_fname(learning_rate)
 
-    n_minibatches = len(train_dataset) // batch_size
+    n_minibatches = len(Constants.train_dataset) // batch_size
     for epoch in range(n_epochs):  # loop over the dataset multiple times
         start_time = time.time()
 
@@ -93,8 +77,8 @@ def train(net, batch_size, n_epochs, learning_rate):
         for i in range(n_minibatches):
 
             # Gather data for this mini batch
-            inputs = th.tensor([train_dataset[j]['imNorm'] for j in range(i, i+batch_size)], dtype=th.float32)
-            labels = th.tensor([train_dataset[j]['label'] for j in range(i, i+batch_size)], dtype=th.int64)
+            inputs = th.tensor([Constants.train_dataset[j]['imNorm'] for j in range(i, i+batch_size)], dtype=th.float32)
+            labels = th.tensor([Constants.train_dataset[j]['label'] for j in range(i, i+batch_size)], dtype=th.int64)
 
             # zero the parameter gradients
             optimizer.zero_grad()
@@ -111,8 +95,8 @@ def train(net, batch_size, n_epochs, learning_rate):
             loss.backward()
             optimizer.step()
 
-        average_loss_in_epoch = total_train_loss / len(train_dataset)
-        accuracy_in_epoch = total_accurate / len(train_dataset)
+        average_loss_in_epoch = total_train_loss / len(Constants.train_dataset)
+        accuracy_in_epoch = total_accurate / len(Constants.train_dataset)
         train_history.append(average_loss_in_epoch)
         accuracy_history.append(accuracy_in_epoch)
 
@@ -134,15 +118,15 @@ def train(net, batch_size, n_epochs, learning_rate):
 
 if  __name__ == "__main__":
     # Don' train if we have an existing model.
-    if not os.path.isfile(TRAIN_HOSTORY_FNAME):
+    if not os.path.isfile(Constants.TRAIN_HISTORY_FNAME):
         # Each learning rate gets its own training history.
         # The training history consists of the loss and accuracy values for each epoch of training.
         train_history = {}
-        for rate in learning_rates:
+        for rate in Constants.learning_rates:
             train_history[rate] = train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=rate)
 
-        np.save(TRAIN_HOSTORY_FNAME, train_history)
+        np.save(Constants.TRAIN_HISTORY_FNAME, train_history)
 
     # Plot the loss and accuracy for different learning rates accross epochs.
-    train_history = np.load(TRAIN_HOSTORY_FNAME, allow_pickle=True)[()]
+    train_history = np.load(Constants.TRAIN_HISTORY_FNAME, allow_pickle=True)[()]
     plot_training_history(train_history)
