@@ -29,14 +29,14 @@ class Dataset_Accuracy(object):
         accuracy = 100 * float(correct_prediction) / total
         print('Accuracy of the network on the {} {} images: {:2f} %'.format(total, name, accuracy))
 
-    def train_dataset_accuracy(self, train_loader):
-        self.dataset_accuracy(train_loader, "train")
+    def train_dataset_accuracy(self, train_dataset):
+        self.dataset_accuracy(train_dataset, "train")
 
-    def validation_dataset_accuracy(self, validaition_set):
-        self.dataset_accuracy(validaition_set, "validation")
+    def validation_dataset_accuracy(self, validation_dataset):
+        self.dataset_accuracy(validation_dataset, "validation")
 
-    def test_dataset_accuracy(self, test_loader):
-        self.dataset_accuracy(test_loader, "test")
+    def test_dataset_accuracy(self, test_dataset):
+        self.dataset_accuracy(test_dataset, "test")
 
     def compute_dataset_accuracy(self, train_dataset=None, test_dataset=None):
         self.train_dataset_accuracy(train_dataset) if train_dataset else None

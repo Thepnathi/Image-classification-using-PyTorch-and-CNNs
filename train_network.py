@@ -54,7 +54,7 @@ def plot_training_history(train_history):
     plt.show()
 
 def gen_model_fname(learning_rate):
-    return "model_learning_rate_" + "{:.0e}".format(learning_rate) + ".pth"
+    return "trained_models/model_learning_rate_" + "{:.0e}".format(learning_rate) + ".pth"
 
 def train(net, batch_size, n_epochs, learning_rate):
     """
