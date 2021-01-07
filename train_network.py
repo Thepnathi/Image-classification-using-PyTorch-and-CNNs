@@ -37,8 +37,8 @@ def plot_training_history(train_history):
     plt.setp(ax2, xlabel='Epoch', ylabel='Accuracy')
     plt.show()
 
-def gen_model_fname(learning_rate):
-    return "trained_models/model_learning_rate_" + "{:.0e}".format(learning_rate) + ".pth"
+def gen_model_fname(learning_rate, num_epochs):
+    return f"trained_models/model_epochs-{num_epochs}_learning_rate-" + "{:.0e}".format(learning_rate) + ".pth"
 
 def train(net, batch_size, n_epochs, learning_rate):
     """
@@ -65,7 +65,6 @@ def train(net, batch_size, n_epochs, learning_rate):
     accuracy_history = []
 
     training_start_time = time.time()
-    model_fname = gen_model_fname(learning_rate)
 
     n_minibatches = len(Constants.train_dataset) // batch_size
     for epoch in range(n_epochs):  # loop over the dataset multiple times
@@ -100,6 +99,7 @@ def train(net, batch_size, n_epochs, learning_rate):
         train_history.append(average_loss_in_epoch)
         accuracy_history.append(accuracy_in_epoch)
 
+        model_fname = gen_model_fname(learning_rate, epoch)
         th.save(net.state_dict(), model_fname)
 
         # Print a single line of statistinc after every epoch.
@@ -117,16 +117,17 @@ def train(net, batch_size, n_epochs, learning_rate):
 
 
 if  __name__ == "__main__":
-    # Don' train if we have an existing model.
+    # Don' train if we have existing models.
     if not os.path.isfile(Constants.TRAIN_HISTORY_FNAME):
         # Each learning rate gets its own training history.
         # The training history consists of the loss and accuracy values for each epoch of training.
         train_history = {}
         for rate in Constants.learning_rates:
-            train_history[rate] = train(ConvolutionalNetwork(), batch_size=16, n_epochs=20, learning_rate=rate)
+            train_history[rate] = train(ConvolutionalNetwork(), batch_size=16,
+                                        n_epochs=max(Constants.num_epochs), learning_rate=rate)
 
         np.save(Constants.TRAIN_HISTORY_FNAME, train_history)
 
-    # Plot the loss and accuracy for different learning rates accross epochs.
+    # # Plot the loss and accuracy for different learning rates.
     train_history = np.load(Constants.TRAIN_HISTORY_FNAME, allow_pickle=True)[()]
     plot_training_history(train_history)

@@ -15,7 +15,8 @@ class Constants(object):
     device = th.device("cuda" if th.cuda.is_available() else "cpu")
 
     default_batch_size = 16
-    default_num_epochs = 20
+    num_epochs = [5, 20]
+    learning_rates = [1e-02, 1e-03, 1e-04, 1e-05, 1e-06]
 
     train_dataset = imageDataset('data', 'img_list_train.npy')
     test_dataset = imageDataset('data', 'img_list_test.npy')
@@ -28,7 +29,6 @@ class Constants(object):
     test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
 
     CLASSES = ["airplanes", "cars", "dog", "faces", "keyboard"]
-    learning_rates = [1e-02, 1e-03, 1e-04, 1e-05]
 
     TRAIN_HISTORY_FNAME = 'train_history_dict.npy'
 
@@ -52,8 +52,8 @@ class Plot_Tools(object):
         """
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-            
-        plt.figure(figsize=(8, 8))   
+
+        plt.figure(figsize=(8, 8))
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         plt.colorbar()
@@ -72,3 +72,17 @@ class Plot_Tools(object):
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
         plt.show()
+
+
+def load_trained_models():
+    # Stores all the trained cnn models
+    trained_models = {}
+
+    # Iterate through learning rates and stores the trained model by learning rate
+    for num_epochs in Constants.num_epochs:
+        for rate in Constants.learning_rates:
+            model = ConvolutionalNetwork()
+            net.load_state_dict(th.load(gen_model_fname(rate, num_epochs)))
+            trained_models_by_learning_rates[rate] = model
+
+    return trained_models

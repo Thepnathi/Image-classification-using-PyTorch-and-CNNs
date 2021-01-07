@@ -8,8 +8,7 @@ Robert Szafarczyk, 201307211
 
 import numpy as np
 import torch as th
-from constants import Constants, Plot_Tools
-from test_network import load_trained_network, load_trained_models_by_learning_rates
+from constants import Constants, Plot_Tools, load_trained_models
 
 class Class_Accuracy(object):
     def __init__(self, net, classes=Constants.CLASSES):
@@ -41,35 +40,38 @@ class Class_Accuracy(object):
             print('{:<10} {:^10.2f}'.format(self.classes[i], percentage_correct))
 
         print(f'\nOverall Accuracy: {overall_correct // self.num_class}%')
-        
+
         return confusion_matrix
 
 
 if __name__ == "__main__":
     # dictionary that contains the trained cnn model, where key is the model's learning rate
-    trained_models_by_learning_rates = load_trained_models_by_learning_rates()
+    trained_models = load_trained_models()
 
-    # dictionary to stores the confusion matrix of each model, where key is the learning rates 
+    # dictionary to stores the confusion matrix of each model, where key is the learning rates
     confusion_matrix_by_learning_rates = {}
 
-    # Iterate through each value of learning rate and pulls the corresponding model from the dictionary
-    # Compute and stores the confusion matrix given the cnn model and the test data
-    for rate in Constants.learning_rates:
-        print(f'Model with learning rate of {rate}:')
-        class_acc = Class_Accuracy(trained_models_by_learning_rates[rate], Constants.CLASSES)
-        confusion_matrix_by_learning_rates[rate] = class_acc.compute_confusion_matrix_for_class_accuracy(Constants.test_dataset)
-        print(Constants.line)
-        break # Remove break to check all the models
+    # Iterate through each model, compute and stores the confusion matrix.
+    for num_epochs in Constants.num_epochs:
+        confusion_matrix_by_learning_rates[num_epochs] = {}
+        for rate in Constants.learning_rates:
+            print(f'Learning rate: {rate}, Number of epochs: {num_epochs}')
 
-    
-    # For each learning rate, use matplotlib to display the confusion matrix
-    for rate in Constants.learning_rates:
-        print(confusion_matrix_by_learning_rates[rate])
-        print(Constants.line)
-        Plot_Tools.plot_confusion_matrix(cm=confusion_matrix_by_learning_rates[rate], 
-                                         classes=Constants.CLASSES, 
-                                         normalize=False, 
-                                         title=f'Confusion matrix of CCN model with learning rate of {rate}')
-        break # Remove break to check all the models
+            class_acc = Class_Accuracy(trained_models[rate], Constants.CLASSES)
+            confusion_matrix_by_learning_rates[num_epochs][rate] = \
+                class_acc.compute_confusion_matrix_for_class_accuracy(Constants.test_dataset)
 
+            print(Constants.line)
+
+
+    # For each model, use matplotlib to display the confusion matrix
+    for num_epochs in Constants.num_epochs:
+        for rate in Constants.learning_rates:
+            print(confusion_matrix_by_learning_rates[num_epochs][rate])
+            print(Constants.line)
+
+            Plot_Tools.plot_confusion_matrix(cm=confusion_matrix_by_learning_rates[num_epochs][rate],
+                                            classes=Constants.CLASSES,
+                                            normalize=False,
+                                            title=f'Confusion matrix of CCN model with learning rate of {rate} and number of epochs of {num_epochs}')
 

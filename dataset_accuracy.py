@@ -7,7 +7,7 @@ Robert Szafarczyk, 201307211
 
 from test_network import load_trained_network, load_trained_models_by_learning_rates
 from cnn import ConvolutionalNetwork
-from constants import Constants
+from constants import Constants, load_trained_models
 import torch as th
 
 class Dataset_Accuracy(object):
@@ -47,11 +47,12 @@ class Dataset_Accuracy(object):
 
 if __name__ == "__main__":
     # load all the trained models
-    trained_models_by_learning_rates = load_trained_models_by_learning_rates()
+    trained_models = load_trained_models()
 
     # Calculates the overall prediction accuracy of the train and test dataset on each of the trained cnn models by learning rate
-    for rate in Constants.learning_rates:
-        print(f'Learning rate: {rate}')
-        loaded_trained_model = trained_models_by_learning_rates[rate]
-        dataset_accuracy = Dataset_Accuracy(loaded_trained_model)
-        dataset_accuracy .compute_dataset_accuracy(Constants.train_dataset, Constants.test_dataset)
+    for num_epochs in Constants.num_epochs:
+        for rate in Constants.learning_rates:
+            print(f'Learning rate: {rate}, Number of epochs: {num_epochs}')
+            loaded_trained_model = trained_models[rate]
+            dataset_accuracy = Dataset_Accuracy(loaded_trained_model)
+            dataset_accuracy.compute_dataset_accuracy(Constants.train_dataset, Constants.test_dataset)
