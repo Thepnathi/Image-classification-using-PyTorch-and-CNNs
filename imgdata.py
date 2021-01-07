@@ -62,8 +62,9 @@ class imageDataset(Dataset):
         imNorm[2, :, :] = (img[2,:,:] - np.max(img[2,:,:]))/(np.max(img[2,:,:])-np.min(img[2,:,:])) -0.5
 
         return{
-            'imNorm': imNorm.astype(np.float32),
-            'label': label                #image label
+            'im': im,                               # OpenCV image
+            'imNorm': imNorm.astype(np.float32),    # normalised image for training
+            'label': label                          # image label
             }
 
 class DefaultTrainSet(imageDataset):
