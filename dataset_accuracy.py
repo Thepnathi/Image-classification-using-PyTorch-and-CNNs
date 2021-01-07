@@ -5,7 +5,6 @@ Thepnathi Chindalaksanaloet, 201123978
 Robert Szafarczyk, 201307211
 """
 
-from test_network import load_trained_network, load_trained_models_by_learning_rates
 from cnn import ConvolutionalNetwork
 from constants import Constants, load_trained_models
 import torch as th

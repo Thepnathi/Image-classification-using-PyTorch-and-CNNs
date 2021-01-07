@@ -10,6 +10,7 @@ import numpy as np
 import torch as th
 import matplotlib.pyplot as plt
 from imgdata import imageDataset, DefaultTrainSet, DefaultTestSet
+from cnn import ConvolutionalNetwork
 
 class Constants(object):
     device = th.device("cuda" if th.cuda.is_available() else "cpu")
@@ -81,8 +82,11 @@ def load_trained_models():
     # Iterate through learning rates and stores the trained model by learning rate
     for num_epochs in Constants.num_epochs:
         for rate in Constants.learning_rates:
-            model = ConvolutionalNetwork()
+            net = ConvolutionalNetwork()
             net.load_state_dict(th.load(gen_model_fname(rate, num_epochs)))
-            trained_models_by_learning_rates[rate] = model
+            trained_models[rate] = net
 
     return trained_models
+
+def gen_model_fname(learning_rate, num_epochs):
+    return f"trained_models/model_epochs-{num_epochs}_learning_rate-" + "{:.0e}".format(learning_rate) + ".pth"

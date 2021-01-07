@@ -11,7 +11,7 @@ import torch as th
 import numpy as np
 import matplotlib.pyplot as plt
 
-from constants import Constants
+from constants import Constants, gen_model_fname
 from cnn import ConvolutionalNetwork, createLossAndOptimizer
 
 def plot_training_history(train_history):
@@ -36,9 +36,6 @@ def plot_training_history(train_history):
     plt.setp(ax1, xlabel='Epoch', ylabel='Loss')
     plt.setp(ax2, xlabel='Epoch', ylabel='Accuracy')
     plt.show()
-
-def gen_model_fname(learning_rate, num_epochs):
-    return f"trained_models/model_epochs-{num_epochs}_learning_rate-" + "{:.0e}".format(learning_rate) + ".pth"
 
 def train(net, batch_size, n_epochs, learning_rate):
     """
@@ -99,7 +96,7 @@ def train(net, batch_size, n_epochs, learning_rate):
         train_history.append(average_loss_in_epoch)
         accuracy_history.append(accuracy_in_epoch)
 
-        model_fname = gen_model_fname(learning_rate, epoch)
+        model_fname = gen_model_fname(learning_rate, epoch+1)
         th.save(net.state_dict(), model_fname)
 
         # Print a single line of statistinc after every epoch.
@@ -128,6 +125,6 @@ if  __name__ == "__main__":
 
         np.save(Constants.TRAIN_HISTORY_FNAME, train_history)
 
-    # # Plot the loss and accuracy for different learning rates.
+    # Plot the loss and accuracy for different learning rates.
     train_history = np.load(Constants.TRAIN_HISTORY_FNAME, allow_pickle=True)[()]
     plot_training_history(train_history)
