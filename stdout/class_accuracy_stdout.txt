@@ -1,61 +1,110 @@
-PS C:\Users\thepn\Development\University\comp338\Assignment 2 Resources\Image-classification-using-PyTorch-and-CNNs> & C:/Users/thepn/AppData/Local/Programs/Python/Python38/python.exe "c:/Users/thepn/Development/University/comp338/Assignment 2 Resources/Image-classification-using-PyTorch-and-CNNs/class_accuracy.py"
+(.venv) robert@Roberts-MBP:~/Uni/COMP338/Ass2/Image-classification-using-PyTorch-and-CNNs$ python class_accuracy.py
+Learning rate: 0.01, Number of epochs: 5
 Class      Accuracy (%)
-airplanes    27.14   
-cars         27.14
-dog          71.43
-faces        55.71
-keyboard     64.29
+airplanes    20.00
+cars          0.00
+dog          70.00
+faces        70.00
+keyboard     30.00
 
-Overall Accuracy: 49.0%
+Overall Accuracy: 38.0%
 ==================
+
+Learning rate: 0.001, Number of epochs: 5
 Class      Accuracy (%)
-airplanes    35.71   
-cars         27.14
-dog          94.29
-faces        74.29
-keyboard     64.29
+airplanes    10.00
+cars         20.00
+dog          20.00
+faces        50.00
+keyboard     90.00
 
-Overall Accuracy: 59.0%
+Overall Accuracy: 38.0%
 ==================
+
+Learning rate: 0.0001, Number of epochs: 5
 Class      Accuracy (%)
-airplanes    31.43
-cars         25.71
-dog          90.00
-faces        44.29
-keyboard     94.29
+airplanes     0.00
+cars         30.00
+dog          50.00
+faces        30.00
+keyboard     100.00
 
-Overall Accuracy: 57.0%
+Overall Accuracy: 42.0%
 ==================
+
+Learning rate: 1e-05, Number of epochs: 5
 Class      Accuracy (%)
-airplanes    35.71   
-cars         44.29   
-dog          92.86   
-faces        54.29   
-keyboard     91.43   
+airplanes     0.00
+cars         50.00
+dog          50.00
+faces        40.00
+keyboard     100.00
 
-Overall Accuracy: 63.0%
+Overall Accuracy: 48.0%
 ==================
-[[19  7  1 24 19]
- [ 0 19  6 21 24]
- [ 0  8 50  4  8]
- [ 1 12  2 39 16]
- [ 0  9  4 12 45]]
+
+Learning rate: 1e-06, Number of epochs: 5
+Class      Accuracy (%)
+airplanes     0.00
+cars         10.00
+dog          70.00
+faces        40.00
+keyboard     100.00
+
+Overall Accuracy: 44.0%
 ==================
-[[25  4  2 34  5]
- [ 1 19 11 34  5]
- [ 0  1 66  3  0]
- [ 0  9  8 52  1]
- [ 0  2  9 14 45]]
+
+Learning rate: 0.01, Number of epochs: 20
+Class      Accuracy (%)
+airplanes    20.00
+cars          0.00
+dog          70.00
+faces        70.00
+keyboard     30.00
+
+Overall Accuracy: 38.0%
 ==================
-[[22  5  4  6 33]
- [ 0 18 16 12 24]
- [ 0  1 63  0  6]
- [ 0  3 18 31 18]
- [ 0  1  3  0 66]]
+
+Learning rate: 0.001, Number of epochs: 20
+Class      Accuracy (%)
+airplanes    10.00
+cars         20.00
+dog          20.00
+faces        50.00
+keyboard     90.00
+
+Overall Accuracy: 38.0%
 ==================
-[[25  9  3  8 25]
- [ 0 31 11 11 17]
- [ 0  1 65  2  2]
- [ 0  6 12 38 14]
- [ 0  3  2  1 64]]
+
+Learning rate: 0.0001, Number of epochs: 20
+Class      Accuracy (%)
+airplanes     0.00
+cars         30.00
+dog          50.00
+faces        30.00
+keyboard     100.00
+
+Overall Accuracy: 42.0%
+==================
+
+Learning rate: 1e-05, Number of epochs: 20
+Class      Accuracy (%)
+airplanes     0.00
+cars         50.00
+dog          50.00
+faces        40.00
+keyboard     100.00
+
+Overall Accuracy: 48.0%
+==================
+
+Learning rate: 1e-06, Number of epochs: 20
+Class      Accuracy (%)
+airplanes     0.00
+cars         10.00
+dog          70.00
+faces        40.00
+keyboard     100.00
+
+Overall Accuracy: 44.0%
 ==================

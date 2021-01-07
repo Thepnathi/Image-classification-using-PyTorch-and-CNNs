@@ -1,17 +1,41 @@
-PS C:\Users\thepn\Development\University\comp338\Assignment 2 Resources\Image-classification-using-PyTorch-and-CNNs> & C:/Users/thepn/AppData/Local/Programs/Python/Python38/python.exe "c:/Users/thepn/Development/University/comp338/Assignment 2 Resources/Image-classification-using-PyTorch-and-CNNs/model_accuracy.py"
-Learning rate: 0.01
-Accuracy of the network on the 350 train images: 49.142857 %
-Accuracy of the network on the 50 test images: 34.000000 %
+(.venv) robert@Roberts-MBP:~/Uni/COMP338/Ass2/Image-classification-using-PyTorch-and-CNNs$ python dataset_accuracy.py
+Learning rate: 0.01, Number of epochs: 5
+Accuracy of the network on the 350 train images: 55.428571 %
+Accuracy of the network on the 50 test images: 38.000000 %
 ====================
-Learning rate: 0.001
-Accuracy of the network on the 350 train images: 59.142857 %
-Accuracy of the network on the 50 test images: 46.000000 %
+Learning rate: 0.001, Number of epochs: 5
+Accuracy of the network on the 350 train images: 61.142857 %
+Accuracy of the network on the 50 test images: 38.000000 %
 ====================
-Learning rate: 0.0001
-Accuracy of the network on the 350 train images: 57.142857 %
+Learning rate: 0.0001, Number of epochs: 5
+Accuracy of the network on the 350 train images: 58.571429 %
+Accuracy of the network on the 50 test images: 42.000000 %
+====================
+Learning rate: 1e-05, Number of epochs: 5
+Accuracy of the network on the 350 train images: 63.142857 %
+Accuracy of the network on the 50 test images: 48.000000 %
+====================
+Learning rate: 1e-06, Number of epochs: 5
+Accuracy of the network on the 350 train images: 58.285714 %
 Accuracy of the network on the 50 test images: 44.000000 %
 ====================
-Learning rate: 1e-05
-Accuracy of the network on the 350 train images: 63.714286 %
-Accuracy of the network on the 50 test images: 46.000000 %
+Learning rate: 0.01, Number of epochs: 20
+Accuracy of the network on the 350 train images: 55.428571 %
+Accuracy of the network on the 50 test images: 38.000000 %
+====================
+Learning rate: 0.001, Number of epochs: 20
+Accuracy of the network on the 350 train images: 61.142857 %
+Accuracy of the network on the 50 test images: 38.000000 %
+====================
+Learning rate: 0.0001, Number of epochs: 20
+Accuracy of the network on the 350 train images: 58.571429 %
+Accuracy of the network on the 50 test images: 42.000000 %
+====================
+Learning rate: 1e-05, Number of epochs: 20
+Accuracy of the network on the 350 train images: 63.142857 %
+Accuracy of the network on the 50 test images: 48.000000 %
+====================
+Learning rate: 1e-06, Number of epochs: 20
+Accuracy of the network on the 350 train images: 58.285714 %
+Accuracy of the network on the 50 test images: 44.000000 %
 ====================

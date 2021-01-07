@@ -61,7 +61,7 @@ if __name__ == "__main__":
             confusion_matrix_by_learning_rates[num_epochs][rate] = \
                 class_acc.compute_confusion_matrix_for_class_accuracy(Constants.test_dataset)
 
-            print(Constants.line)
+            print(Constants.line + "\n")
 
 
     # For each model, use matplotlib to display the confusion matrix
