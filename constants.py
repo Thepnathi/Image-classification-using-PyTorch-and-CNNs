@@ -29,7 +29,8 @@ class Constants(object):
     train_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_training_samples, dtype=np.int64))
     test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
 
-    CLASSES = ["airplanes", "cars", "dog", "faces", "keyboard"]
+    # CLASSES = ["airplanes", "cars", "dog", "faces", "keyboard"]
+    CLASSES = ['faces', 'dog', 'airplanes', 'keyboard', 'cars']
 
     TRAIN_HISTORY_FNAME = 'train_history_dict.npy'
 

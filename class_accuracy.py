@@ -32,6 +32,7 @@ class Class_Accuracy(object):
             image, label = image.to(Constants.device), label.to(Constants.device)
             result = self.net(image)
             _, predicted = th.max(result.data, 1)
+            # print(Constants.CLASSES[label])
             # self.showImg(dataset[i]['im'], predicted)
             confusion_matrix[label, predicted] += 1
 
