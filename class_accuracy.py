@@ -9,7 +9,7 @@ Robert Szafarczyk, 201307211
 import numpy as np
 import torch as th
 import cv2 as cv2
-from constants import Constants, Plot_Tools, load_trained_models
+from constants import Constants, Plot_Tools, load_trained_models, display_predictions
 
 class Class_Accuracy(object):
     def __init__(self, net, classes=Constants.CLASSES):
@@ -19,13 +19,17 @@ class Class_Accuracy(object):
 
     def showImg(self, image, predicted):
         window_name = f'Predicted: {Constants.CLASSES[predicted]}'
-        cv2.imshow(window_name, image) 
+        cv2.imshow(window_name, image)
         cv2.waitKey(0)
 
     # Takes quite long to compute for one model. Might be good idea to use cuda for this part
-    def compute_confusion_matrix_for_class_accuracy(self, dataset, batch_size=Constants.default_batch_size):
+    def compute_confusion_matrix_for_class_accuracy(self, dataset, batch_size=Constants.default_batch_size, show_images=False):
         # confusion matrix (real label, predicted label)
         confusion_matrix = np.zeros((self.num_class, self.num_class), dtype=np.int64)
+
+        correct_predicted = [[] for _ in range(len(Constants.CLASSES))]
+        incorrect_predicted = [[] for _ in range(len(Constants.CLASSES))]
+        NUM_TO_SHOW = 5
 
         for i in range(len(dataset)):
             image, label = th.tensor([dataset[i]['imNorm']]), th.tensor([dataset[i]['label']])
@@ -35,6 +39,14 @@ class Class_Accuracy(object):
             # print(Constants.CLASSES[label])
             # self.showImg(dataset[i]['im'], predicted)
             confusion_matrix[label, predicted] += 1
+
+            # Unpack from tensors.
+            predicted, label = int(predicted), int(label)
+            if predicted == label and len(correct_predicted[predicted]) < NUM_TO_SHOW:
+                correct_predicted[predicted].append(dataset[i])
+            elif predicted != label and len(incorrect_predicted[predicted]) < NUM_TO_SHOW:
+                incorrect_predicted[predicted].append(dataset[i])
+
 
         print("{:<10} {:^10}".format("Class", "Accuracy (%)"))
 
@@ -48,6 +60,11 @@ class Class_Accuracy(object):
             print('{:<10} {:^10.2f}'.format(self.classes[i], percentage_correct))
 
         print(f'\nOverall Accuracy: {overall_correct // self.num_class}%')
+
+        if show_images:
+            print(f'\nShowing {NUM_TO_SHOW} correctly and {NUM_TO_SHOW} incorrectly predicted images for each class\n')
+            for c_idx, c in enumerate(Constants.CLASSES):
+                display_predictions(c, correct_predicted[c_idx], incorrect_predicted[c_idx], title=f"Images predicted as {c}.")
 
         return confusion_matrix
 
@@ -65,9 +82,12 @@ if __name__ == "__main__":
         for rate in Constants.learning_rates:
             print(f'Learning rate: {rate}, Number of epochs: {num_epochs}')
 
+            # Only display images for step 4.4 for the best model.
+            show_images = True if num_epochs == 20 and rate == 1e-05 else False
+
             class_acc = Class_Accuracy(trained_models[rate], Constants.CLASSES)
             confusion_matrix_by_learning_rates[num_epochs][rate] = \
-                class_acc.compute_confusion_matrix_for_class_accuracy(Constants.test_dataset)
+                class_acc.compute_confusion_matrix_for_class_accuracy(Constants.test_dataset, show_images=show_images)
 
             print(Constants.line + "\n")
 

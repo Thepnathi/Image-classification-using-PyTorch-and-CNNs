@@ -8,7 +8,10 @@ Robert Szafarczyk, 201307211
 import itertools
 import numpy as np
 import torch as th
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 from imgdata import imageDataset, DefaultTrainSet, DefaultTestSet
 from cnn import ConvolutionalNetwork
 
@@ -29,7 +32,6 @@ class Constants(object):
     train_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_training_samples, dtype=np.int64))
     test_sampler = th.utils.data.sampler.SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
 
-    # CLASSES = ["airplanes", "cars", "dog", "faces", "keyboard"]
     CLASSES = ['faces', 'dog', 'airplanes', 'keyboard', 'cars']
 
     TRAIN_HISTORY_FNAME = 'train_history_dict.npy'
@@ -91,3 +93,29 @@ def load_trained_models():
 
 def gen_model_fname(learning_rate, num_epochs):
     return f"trained_models/model_epochs-{num_epochs}_learning_rate-" + "{:.0e}".format(learning_rate) + ".pth"
+
+def display_predictions(class_type, correct, incorrect, title=""):
+    rows = 2
+    cols = max(len(correct), len(incorrect)) + 2
+    f, axarr = plt.subplots(rows, cols, num=None, figsize=(10, 6))
+    f.canvas.set_window_title(title)
+    mpl.rcParams['toolbar'] = 'None'
+
+    for r in range(rows):
+        axarr[r,0].axis('off')
+        axarr[r,0].set_title("Correct" if r == 0 else "Incorrect")
+
+        for c in range(1, cols):
+            axarr[r,c].axis('off')
+            # Correct predictions in first and incorrect in second row.
+            if r == 0 and c < len(correct):
+                axarr[r,c].imshow(correct[c]['im'])
+            elif r == 1 and c < len(incorrect):
+                axarr[r,c].imshow(incorrect[c]['im'])
+
+
+    # SHow and cloase after a button is pressed.
+    plt.show(block=False)
+    plt.waitforbuttonpress()
+    plt.close()
+
