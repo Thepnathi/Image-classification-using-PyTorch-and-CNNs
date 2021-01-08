@@ -10,7 +10,8 @@ Edited 01/01/2021 by
     Robert Szafarczyk, 201307211
 Changes:
     - use opencv instead of scimage to load images,
-    - change image labels from 1D numpy arrays to scalar integers.
+    - change image labels from 1D numpy arrays to scalar integers,
+    - add OpenCV image matrix to the data loader.
 '''
 
 import os
