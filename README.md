@@ -7,6 +7,8 @@ Image classification using PyTorch and Convolutional Neural Network.
 How to run the different steps of the CNN model (and the time it takes).
 Paste the python commands into console/terminal.
 
+Note: we include the console output of each stage in the stdout directory.
+
 ### Step 1 - Train the network
 
 * Train the CNN model using 350 images of 5 classes
@@ -30,3 +32,5 @@ python dataset_accuracy.py
 ```
 python class_accuracy.py
 ```
+
+
