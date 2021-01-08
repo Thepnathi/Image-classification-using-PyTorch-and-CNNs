@@ -8,6 +8,7 @@ Robert Szafarczyk, 201307211
 
 import numpy as np
 import torch as th
+import cv2 as cv2
 from constants import Constants, Plot_Tools, load_trained_models
 
 class Class_Accuracy(object):
@@ -15,6 +16,11 @@ class Class_Accuracy(object):
         self.net = net
         self.classes = classes
         self.num_class = len(self.classes)
+
+    def showImg(self, image, predicted):
+        window_name = f'Predicted: {Constants.CLASSES[predicted]}'
+        cv2.imshow(window_name, image) 
+        cv2.waitKey(0)
 
     # Takes quite long to compute for one model. Might be good idea to use cuda for this part
     def compute_confusion_matrix_for_class_accuracy(self, dataset, batch_size=Constants.default_batch_size):
@@ -26,6 +32,7 @@ class Class_Accuracy(object):
             image, label = image.to(Constants.device), label.to(Constants.device)
             result = self.net(image)
             _, predicted = th.max(result.data, 1)
+            # self.showImg(dataset[i]['im'], predicted)
             confusion_matrix[label, predicted] += 1
 
         print("{:<10} {:^10}".format("Class", "Accuracy (%)"))
@@ -74,4 +81,5 @@ if __name__ == "__main__":
                                             classes=Constants.CLASSES,
                                             normalize=False,
                                             title=f'Confusion matrix of CCN model with learning rate of {rate} and number of epochs of {num_epochs}')
+        print("\n")
 
